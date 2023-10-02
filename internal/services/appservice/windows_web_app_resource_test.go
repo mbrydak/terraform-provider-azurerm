@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package appservice_test
 
 import (
@@ -910,6 +913,14 @@ func TestAccWindowsWebApp_withDockerImageDockerHub(t *testing.T) {
 			Check: acceptance.ComposeTestCheckFunc(
 				check.That(data.ResourceName).ExistsInAzure(r),
 				check.That(data.ResourceName).Key("site_config.0.windows_fx_version").HasValue("DOCKER|traefik:windowsservercore-1809"),
+			),
+		},
+		data.ImportStep(),
+		{
+			Config: r.dockerImageName(data, "https://index.docker.io", "traefik:v3.0-windowsservercore-1809"),
+			Check: acceptance.ComposeTestCheckFunc(
+				check.That(data.ResourceName).ExistsInAzure(r),
+				check.That(data.ResourceName).Key("site_config.0.windows_fx_version").HasValue("DOCKER|traefik:v3.0-windowsservercore-1809"),
 			),
 		},
 		data.ImportStep(),
@@ -2700,7 +2711,7 @@ resource "azurerm_windows_web_app" "test" {
           count             = 1
           status_code_range = 500
           sub_status        = 30
-          win32_status      = 0
+          win32_status_code = 0
           interval          = "00:10:00"
         }
       }

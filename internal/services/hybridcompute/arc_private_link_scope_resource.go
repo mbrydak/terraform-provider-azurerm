@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package hybridcompute
 
 import (
@@ -72,7 +75,7 @@ func (a ArcPrivateLinkScopeResource) Create() sdk.ResourceFunc {
 			client := metadata.Client.HybridCompute.PrivateLinkScopesClient
 			subscriptionId := metadata.Client.Account.SubscriptionId
 			id := privatelinkscopes.NewProviderPrivateLinkScopeID(subscriptionId, model.ResourceGroupName, model.Name)
-			existing, err := client.PrivateLinkScopesGet(ctx, id)
+			existing, err := client.Get(ctx, id)
 			if err != nil && !response.WasNotFound(existing.HttpResponse) {
 				return fmt.Errorf("checking for existing %s: %+v", id, err)
 			}
@@ -96,7 +99,7 @@ func (a ArcPrivateLinkScopeResource) Create() sdk.ResourceFunc {
 
 			properties.Properties.PublicNetworkAccess = &publicNetwork
 
-			if _, err := client.PrivateLinkScopesCreateOrUpdate(ctx, id, properties); err != nil {
+			if _, err := client.CreateOrUpdate(ctx, id, properties); err != nil {
 				return fmt.Errorf("creating %s: %+v", id, err)
 			}
 
@@ -122,7 +125,7 @@ func (a ArcPrivateLinkScopeResource) Update() sdk.ResourceFunc {
 				return fmt.Errorf("decoding: %+v", err)
 			}
 
-			existing, err := client.PrivateLinkScopesGet(ctx, *id)
+			existing, err := client.Get(ctx, *id)
 			if err != nil {
 				return fmt.Errorf("retrieving %s: %+v", *id, err)
 			}
@@ -144,7 +147,7 @@ func (a ArcPrivateLinkScopeResource) Update() sdk.ResourceFunc {
 				properties.Tags = &model.Tags
 			}
 
-			if _, err := client.PrivateLinkScopesCreateOrUpdate(ctx, *id, *properties); err != nil {
+			if _, err := client.CreateOrUpdate(ctx, *id, *properties); err != nil {
 				return fmt.Errorf("updating %s: %+v", id, err)
 			}
 
@@ -165,7 +168,7 @@ func (a ArcPrivateLinkScopeResource) Read() sdk.ResourceFunc {
 				return err
 			}
 
-			existing, err := client.PrivateLinkScopesGet(ctx, *id)
+			existing, err := client.Get(ctx, *id)
 			if err != nil {
 				if response.WasNotFound(existing.HttpResponse) {
 					return metadata.MarkAsGone(id)
@@ -205,7 +208,7 @@ func (a ArcPrivateLinkScopeResource) Delete() sdk.ResourceFunc {
 				return err
 			}
 
-			if err := client.PrivateLinkScopesDeleteThenPoll(ctx, *id); err != nil {
+			if err := client.DeleteThenPoll(ctx, *id); err != nil {
 				return fmt.Errorf("deleting %s: %+v", *id, err)
 			}
 

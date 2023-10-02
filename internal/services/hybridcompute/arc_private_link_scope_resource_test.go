@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package hybridcompute_test
 
 import (
@@ -96,7 +99,7 @@ func (r ArcPrivateLinkScopeResource) Exists(ctx context.Context, clients *client
 
 	client := clients.HybridCompute.PrivateLinkScopesClient
 
-	resp, err := client.PrivateLinkScopesGet(ctx, *id)
+	resp, err := client.Get(ctx, *id)
 	exists := false
 	if err != nil {
 		if response.WasNotFound(resp.HttpResponse) {

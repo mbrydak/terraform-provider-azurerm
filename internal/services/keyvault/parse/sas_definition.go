@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package parse
 
 import (
@@ -10,6 +13,11 @@ type SasDefinitionId struct {
 	KeyVaultBaseUrl    string
 	StorageAccountName string
 	Name               string
+}
+
+func (i SasDefinitionId) ID() string {
+	fmtString := "%s/storage/%s/sas/%s"
+	return fmt.Sprintf(fmtString, i.KeyVaultBaseUrl, i.StorageAccountName, i.Name)
 }
 
 func SasDefinitionID(id string) (*SasDefinitionId, error) {
@@ -35,7 +43,7 @@ func SasDefinitionID(id string) (*SasDefinitionId, error) {
 	}
 
 	sasDefinitionId := SasDefinitionId{
-		KeyVaultBaseUrl:    fmt.Sprintf("%s://%s/", idURL.Scheme, idURL.Host),
+		KeyVaultBaseUrl:    fmt.Sprintf("https://%s", idURL.Host),
 		StorageAccountName: components[1],
 		Name:               components[3],
 	}
